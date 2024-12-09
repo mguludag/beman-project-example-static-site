@@ -1,9 +1,8 @@
 ---
 title: Demo Page
 type: docs
-prev: /
+prev: code-of-conduct
 next: docs/folder/
 ---
 
 A simple demo page.
-

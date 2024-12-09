@@ -1,6 +1,6 @@
 ---
 title: Documentation
-next: first-page
+next: beman-standard
 ---
 
 This is a demo of the theme's documentation layout.

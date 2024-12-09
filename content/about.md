@@ -1,5 +1,5 @@
 ---
-title: About
+title: About Beman
 type: about
 ---
 
