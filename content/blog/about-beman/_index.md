@@ -2,7 +2,7 @@
 title: About Beman
 date: 2025-01-07
 authors:
-  - name: "Dave Abrahams"
+  - name: dabrahams
     link: https://github.com/dabrahams
     image: https://avatars.githubusercontent.com/u/44065?v=4
 tags:
