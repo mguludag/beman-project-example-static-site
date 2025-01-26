@@ -51,6 +51,11 @@ params:
       width: 40
       height: 20
 
+  theme:
+    # light | dark | system
+    default: system
+    displayToggle: true
+
   footer:
     displayCopyright: false
     displayPoweredBy: true
