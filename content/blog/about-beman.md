@@ -11,6 +11,7 @@ tags:
 excludeSearch: true
 ---
 
+![Beman](./about-beman/beman.png)
 I met Beman Dawes when I attended my first C++ committee meeting in 1997. I wasn’t even a committee member at that time; I showed up at the meeting because I was trying to get exception safety into the C++ standard and Andrew Koenig had made it clear that arguing for it over email wasn’t going to cut it; I needed to show my face.
 <!--more-->
 
@@ -22,4 +23,3 @@ I left that meeting with the realization that it was possible to work together i
 
 As we grew Boost over the years, so grew our friendship, and when Beman passed away suddenly in 2020, it was a great loss to me personally, and, I think, to the world of programming. Beman never sought the spotlight, and I always wondered what would become of his contribution, which was surely underappreciated. That’s why I was so thrilled to hear that a modern C++ libraries project was being launched in his name. May it continue to demonstrate Beman’s commitment to community and excellence.
 
-![Beman](./beman.png)
