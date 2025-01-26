@@ -11,7 +11,7 @@ tags:
 excludeSearch: true
 ---
 
-![Beman](./about-beman/beman.png)
+![Beman](./beman.png)
 I met Beman Dawes when I attended my first C++ committee meeting in 1997. I wasn’t even a committee member at that time; I showed up at the meeting because I was trying to get exception safety into the C++ standard and Andrew Koenig had made it clear that arguing for it over email wasn’t going to cut it; I needed to show my face.
 <!--more-->
 
