@@ -14,8 +14,9 @@
         "esbenp.prettier-vscode",
         "tamasfe.even-better-toml",
         "budparr.language-hugo-vscode"
-      ]
+      ],
     }
   },
+  "postCreateCommand": "echo 'alias beman-serve=\"hugo server --logLevel debug --disableFastRender -p 1313\"' >> ~/.bash_aliases",
   "forwardPorts": [1313]
 }
