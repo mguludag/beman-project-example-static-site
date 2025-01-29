@@ -61,6 +61,8 @@ Override the configuration:
 Pre-requisites: [Hugo](https://gohugo.io/getting-started/installing/), [Go](https://golang.org/doc/install) and [Git](https://git-scm.com)
 
 ```shell
+# install Go and Hugo
+
 # Clone the repo
 git clone https://github.com/imfing/hextra-starter-template.git
 
