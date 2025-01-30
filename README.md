@@ -71,6 +71,8 @@ cd hextra-starter-template
 hugo mod tidy
 hugo server --logLevel debug --disableFastRender -p 1313
 ```
+### Quick way (Mac and Ubuntu)
+`setup-mac.sh` or `setup-ubuntu.sh` scripts will download `go` and `hugo` then adds `beman-serve` alias to start local development server.
 
 ### Update theme
 
