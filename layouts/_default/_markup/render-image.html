@@ -1,0 +1,90 @@
+{{- $alt := .PlainText | safeHTML -}}
+{{- $lazyLoading := .Page.Site.Params.enableImageLazyLoading | default true -}}
+{{- $dest := .Destination -}}
+
+{{- $isLocal := not (urls.Parse $dest).Scheme -}}
+{{- $isPage := and (eq .Page.Kind "page") (not .Page.BundleType) -}}
+{{- $startsWithSlash := hasPrefix $dest "/" -}}
+{{- $startsWithRelative := hasPrefix $dest "../" -}}
+
+{{- if and $dest $isLocal -}}
+  {{- if $startsWithSlash -}}
+    {{/* Images under static directory */}}
+    {{- $dest = (relURL (strings.TrimPrefix "/" $dest)) -}}
+  {{- else if and $isPage (not $startsWithRelative) -}}
+    {{/* Images that are sibling to the individual page file */}}
+    {{ $dest = (printf "../%s" $dest) }}
+  {{- end -}}
+{{- end -}}
+
+<style>
+  .image-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    text-align: center;
+    padding: 5px;
+    margin-bottom: 15px;
+    opacity: 0; /* Hide the caption by default */
+    transition: opacity 0.3s ease;
+    visibility: hidden; /* Hide the caption from the page preview */
+  }
+
+  .image-container:hover .caption {
+    opacity: 1; /* Show the caption on hover */
+    visibility: visible; /* Make the caption visible on hover */
+  }
+</style>
+
+{{- with .Title -}}
+  <figure class="image-container">
+    <img src="{{ $dest | safeURL }}" title="{{ . }}" alt="{{ $alt }}" {{ if $lazyLoading }}loading="lazy"{{ end }} />
+    <figcaption class="caption" data-caption="{{ . }}"></figcaption>
+  </figure>
+{{- else -}}
+  <img src="{{ $dest | safeURL }}" alt="{{ $alt }}" {{ if $lazyLoading }}loading="lazy"{{ end }} />
+{{- end -}}
+
+<script>
+    function initCaptionHover() {
+      const imageContainers = document.querySelectorAll(".image-container");
+      imageContainers.forEach((container) => {
+        const caption = container.querySelector(".caption");
+        const captionText = caption.getAttribute("data-caption");
+  
+        container.addEventListener("mouseenter", () => {
+          caption.textContent = captionText; // Insert the caption text on hover
+        });
+  
+        container.addEventListener("mouseleave", () => {
+          caption.textContent = ""; // Remove the caption text when not hovering
+        });
+      });
+    }
+  
+    // Lazy load the script using Intersection Observer
+    document.addEventListener("DOMContentLoaded", function () {
+      const observer = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            initCaptionHover(); // Initialize the hover effect
+            observer.unobserve(entry.target); // Stop observing once initialized
+          }
+        });
+      });
+  
+      // Observe all image containers
+      const imageContainers = document.querySelectorAll(".image-container");
+      imageContainers.forEach((container) => {
+        observer.observe(container);
+      });
+    });
+  </script>
