@@ -1,6 +1,7 @@
 ---
 title: NYC Beman Hackathon
 date: 2025-01-29
+comments: true
 authors:
   - name: camio
     link: https://github.com/camio

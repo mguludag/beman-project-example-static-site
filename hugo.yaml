@@ -54,6 +54,16 @@ params:
       width: 40
       height: 20
 
+  comments:
+    enable: false
+    type: giscus
+
+    giscus:
+      repo: mguludag/beman-project-example-static-site
+      repoId: R_kgDONbFqOQ
+      category: General
+      categoryId: DIC_kwDONbFqOc4Cmisi
+
   theme:
     # light | dark | system
     default: system
