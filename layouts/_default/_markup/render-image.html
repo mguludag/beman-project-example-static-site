@@ -19,14 +19,14 @@
 
 
 
+<figure class="image-container">
 {{- with .Title -}}
-  <figure class="image-container">
     <img src="{{ $dest | safeURL }}" alt="{{ $alt }}" {{ if $lazyLoading }}loading="lazy"{{ end }} />
     <figcaption class="caption" data-caption="{{ . }}"></figcaption>
-  </figure>
 {{- else -}}
-  <img src="{{ $dest | safeURL }}" alt="{{ $alt }}" {{ if $lazyLoading }}loading="lazy"{{ end }} />
+    <img src="{{ $dest | safeURL }}" alt="{{ $alt }}" {{ if $lazyLoading }}loading="lazy"{{ end }} />
 {{- end -}}
+</figure>
 
 
 <style>
@@ -58,6 +58,7 @@
 </style>
 
 <script>
+
   document.addEventListener("DOMContentLoaded", () => {
     const images = [...document.querySelectorAll(".image-container img")]; // Ensure it's an array
     let currentIndex = 0;
@@ -86,6 +87,17 @@
   
       overlay = document.querySelector(".fullscreen-overlay");
       overlay.style.display = "none";
+
+      // Close the overlay if clicking on the background (empty area)
+      overlay.addEventListener("click", (e) => {
+      if (e.target === overlay) {  // Only close if the click was on the empty area
+        hideOverlay();
+        }
+      });
+
+      // Add touch event listeners for mobile swipe functionality
+      overlay.addEventListener("touchstart", handleTouchStart, { passive: true });
+      overlay.addEventListener("touchend", handleTouchEnd, { passive: true });
     }
   
     function showOverlay(index) {
@@ -96,7 +108,8 @@
       const fullscreenCaption = overlay.querySelector(".fullscreen-caption");
   
       fullscreenImage.src = images[currentIndex].src;
-      fullscreenCaption.textContent = images[currentIndex].closest(".image-container").querySelector(".caption").dataset.caption || "";
+      const captionElement = images[currentIndex].closest(".image-container").querySelector(".caption");
+      fullscreenCaption.textContent = captionElement ? captionElement.dataset.caption : "";
   
       overlay.style.display = "flex";
       document.body.style.overflow = "hidden"; // Disable scroll
@@ -118,6 +131,24 @@
     function navigate(direction) {
       const newIndex = (currentIndex + direction + images.length) % images.length;
       showOverlay(newIndex);
+    }
+
+    function handleTouchStart(e) {
+      // Track the touch start position
+      touchStartX = e.touches[0].clientX;
+    }
+  
+    function handleTouchEnd(e) {
+      const touchEndX = e.changedTouches[0].clientX;
+  
+      // If swiped right (touchStartX < touchEndX), go to the previous image
+      if (touchStartX - touchEndX > 50) {
+        navigate(1); // Next image
+      }
+      // If swiped left (touchStartX > touchEndX), go to the next image
+      if (touchEndX - touchStartX > 50) {
+        navigate(-1); // Previous image
+      }
     }
   
     function initFullscreenSlideshow() {
