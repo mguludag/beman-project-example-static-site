@@ -17,10 +17,23 @@
   {{- end -}}
 {{- end -}}
 
+
+
+{{- with .Title -}}
+  <figure class="image-container">
+    <img src="{{ $dest | safeURL }}" alt="{{ $alt }}" {{ if $lazyLoading }}loading="lazy"{{ end }} />
+    <figcaption class="caption" data-caption="{{ . }}"></figcaption>
+  </figure>
+{{- else -}}
+  <img src="{{ $dest | safeURL }}" alt="{{ $alt }}" {{ if $lazyLoading }}loading="lazy"{{ end }} />
+{{- end -}}
+
+
 <style>
   .image-container {
     position: relative;
     display: inline-block;
+    cursor: pointer;
   }
 
   .caption {
@@ -44,47 +57,102 @@
   }
 </style>
 
-{{- with .Title -}}
-  <figure class="image-container">
-    <img src="{{ $dest | safeURL }}" title="{{ . }}" alt="{{ $alt }}" {{ if $lazyLoading }}loading="lazy"{{ end }} />
-    <figcaption class="caption" data-caption="{{ . }}"></figcaption>
-  </figure>
-{{- else -}}
-  <img src="{{ $dest | safeURL }}" alt="{{ $alt }}" {{ if $lazyLoading }}loading="lazy"{{ end }} />
-{{- end -}}
-
 <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const images = [...document.querySelectorAll(".image-container img")]; // Ensure it's an array
+    let currentIndex = 0;
+    let overlay;
+
     function initCaptionHover() {
-      const imageContainers = document.querySelectorAll(".image-container");
-      imageContainers.forEach((container) => {
+      document.querySelectorAll(".image-container").forEach(container => {
         const caption = container.querySelector(".caption");
-        const captionText = caption.getAttribute("data-caption");
-  
-        container.addEventListener("mouseenter", () => {
-          caption.textContent = captionText; // Insert the caption text on hover
-        });
-  
-        container.addEventListener("mouseleave", () => {
-          caption.textContent = ""; // Remove the caption text when not hovering
-        });
+        container.addEventListener("mouseenter", () => caption.textContent = caption.dataset.caption);
+        container.addEventListener("mouseleave", () => caption.textContent = "");
       });
     }
   
-    // Lazy load the script using Intersection Observer
-    document.addEventListener("DOMContentLoaded", function () {
-      const observer = new IntersectionObserver((entries, observer) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            initCaptionHover(); // Initialize the hover effect
-            observer.unobserve(entry.target); // Stop observing once initialized
-          }
-        });
+    function createFullscreenOverlay() {
+      if (document.querySelector(".fullscreen-overlay")) return; // Prevent duplicates
+  
+      document.body.insertAdjacentHTML('beforeend', `
+        <div class="fullscreen-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; flex-direction:column; z-index:1000;">
+          <span class="close-btn" style="position:absolute; top:20px; right:20px; color:white; font-size:30px; cursor:pointer;">&times;</span>
+          <span class="prev-btn" style="position:absolute; top:50%; left:20px; transform:translateY(-50%); color:white; font-size:30px; cursor:pointer;">&#10094;</span>
+          <span class="next-btn" style="position:absolute; top:50%; right:20px; transform:translateY(-50%); color:white; font-size:30px; cursor:pointer;">&#10095;</span>
+          <img class="fullscreen-image" style="max-width:90%; max-height:90%;" />
+          <div class="fullscreen-caption" style="position:absolute; bottom:20px; color:white; background:rgba(0,0,0,0.9); padding:10px; font-size:18px; text-align:center; width:90%;"></div>
+        </div>
+      `);
+  
+      overlay = document.querySelector(".fullscreen-overlay");
+      overlay.style.display = "none";
+    }
+  
+    function showOverlay(index) {
+      if (!images[index]) return;
+  
+      currentIndex = index;
+      const fullscreenImage = overlay.querySelector(".fullscreen-image");
+      const fullscreenCaption = overlay.querySelector(".fullscreen-caption");
+  
+      fullscreenImage.src = images[currentIndex].src;
+      fullscreenCaption.textContent = images[currentIndex].closest(".image-container").querySelector(".caption").dataset.caption || "";
+  
+      overlay.style.display = "flex";
+      document.body.style.overflow = "hidden"; // Disable scroll
+      document.addEventListener("keydown", handleKeyPress);
+    }
+  
+    function hideOverlay() {
+      overlay.style.display = "none";
+      document.body.style.overflow = ""; // Enable scroll
+      document.removeEventListener("keydown", handleKeyPress);
+    }
+  
+    function handleKeyPress(e) {
+      if (e.key === "ArrowLeft") navigate(-1);
+      if (e.key === "ArrowRight") navigate(1);
+      if (e.key === "Escape") hideOverlay();
+    }
+  
+    function navigate(direction) {
+      const newIndex = (currentIndex + direction + images.length) % images.length;
+      showOverlay(newIndex);
+    }
+  
+    function initFullscreenSlideshow() {
+      createFullscreenOverlay();
+      overlay = document.querySelector(".fullscreen-overlay");
+      const closeBtn = overlay.querySelector(".close-btn");
+      const prevBtn = overlay.querySelector(".prev-btn");
+      const nextBtn = overlay.querySelector(".next-btn");
+  
+      images.forEach((img, index) => {
+        img.addEventListener("click", () => showOverlay(index));
       });
   
-      // Observe all image containers
-      const imageContainers = document.querySelectorAll(".image-container");
-      imageContainers.forEach((container) => {
-        observer.observe(container);
+      closeBtn.addEventListener("click", hideOverlay);
+      prevBtn.addEventListener("click", () => navigate(-1));
+      nextBtn.addEventListener("click", () => navigate(1));
+
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) {  // Only close if the click was on the empty area
+          hideOverlay();
+        }
+      });
+    }
+  
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          initCaptionHover();
+          initFullscreenSlideshow();
+          observer.unobserve(entry.target);
+        }
       });
     });
-  </script>
+  
+    document.querySelectorAll(".image-container").forEach(container => observer.observe(container));
+  });
+  
+</script>
