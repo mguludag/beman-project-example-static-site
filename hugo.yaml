@@ -61,8 +61,8 @@ params:
     giscus:
       repo: mguludag/beman-project-example-static-site
       repoId: R_kgDONbFqOQ
-      category: General
-      categoryId: DIC_kwDONbFqOc4Cmisi
+      category: Blog
+      categoryId: DIC_kwDONbFqOc4CmnfY
 
   theme:
     # light | dark | system
