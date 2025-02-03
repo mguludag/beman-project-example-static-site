@@ -73,16 +73,28 @@
 
   document.addEventListener("DOMContentLoaded", () => {
 
-    const gallery = lightGallery(document.body, {
-      selector: '[data-lightbox="gallery"]', 
-      download: true,
-      zoom: true,
-      thumbnail: true,
-      autoplay: false,
-      subHtmlSelectorRelative: true,
-      plugins: [lgThumbnail, lgZoom],
-      mode: 'lg-fade'
-  });
+    // Prevent multiple initializations by checking a class
+    if (!document.querySelector('.gallery-initialized')) {
+      // Add class to mark the gallery as initialized
+      document.body.classList.add('gallery-initialized');
+
+      // Initialize lightGallery on elements with `data-lightbox="gallery"`
+      lightGallery(document.body, {
+          selector: '[data-lightbox="gallery"]', 
+          download: true,
+          zoom: true,
+          thumbnail: true,
+          subHtmlSelectorRelative: true,
+          mode: 'lg-fade',
+          plugins: [lgZoom, lgThumbnail], // Enable Zoom & Thumbnails
+          mobileSettings: {
+              controls: true,
+              showCloseIcon: true,
+              download: true,
+              rotate: true
+          }
+      });
+  }
 
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
