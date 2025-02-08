@@ -1,0 +1,38 @@
+{{- $lang := site.Language.LanguageCode | default `en` -}}
+
+{{- with site.Params.comments.discourse -}}
+
+    <div id="discourse-comments" class="discourse-comments"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript">
+      var discourseEmbedUrl = window.location.href;
+      console.info(discourseEmbedUrl)
+      DiscourseEmbed = { 
+        discourseUrl: '{{ .url }}', 
+        discourseEmbedUrl: discourseEmbedUrl 
+      };
+  
+      (function () {
+        var d = document.createElement('script'); 
+        d.type = 'text/javascript'; 
+        d.async = true;
+        d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByClassName('discourse-comments')[0]).appendChild(d);
+  
+        var n = $('iframe html article.post').length;
+        console.info('number of comments ', n)
+        if ( n > 0) {
+          $('.post__comments').append( n + ' commments');
+        }
+  
+        if ($('iframe html div.embed-error')){
+          console.info('if the error exists hide the iframe ')
+          $('.discourse-comments iframe').css('display', 'none');
+        }
+      })();
+    </script>
+  </div>
+
+{{- else -}}
+  {{ warnf "discourse is not configured" }}
+{{- end -}}

@@ -56,7 +56,10 @@ params:
 
   comments:
     enable: false
-    type: giscus
+    type: discourse
+
+    discourse:
+      url: https://discourse.bemanproject.org/
 
     giscus:
       repo: mguludag/beman-project-example-static-site
