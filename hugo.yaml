@@ -34,8 +34,13 @@ menu:
       weight: 5
       params:
         type: search
-    - name: GitHub
+    - name: Discourse
       weight: 6
+      url: "https://discourse.bemanproject.org/"
+      params:
+        icon: chat
+    - name: GitHub
+      weight: 7
       url: "http://github.com/bemanproject"
       params:
         icon: github
